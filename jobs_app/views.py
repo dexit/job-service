@@ -1,5 +1,7 @@
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import mixins
+from rest_framework import viewsets
 
 from simple_login import views
 
@@ -46,7 +48,7 @@ class Status(views.StatusAPIView):
     serializer_class = serializers.UserSerializer
 
 
-class ExperienceListCreateAPIView(generics.ListCreateAPIView):
+class ExperienceListCreateAPIView(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.ExperienceSerializer
 
@@ -57,7 +59,7 @@ class ExperienceListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class EducationListCreateAPIView(generics.ListCreateAPIView):
+class EducationListCreateAPIView(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.EducationSerializer
 

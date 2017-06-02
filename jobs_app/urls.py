@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from rest_framework import routers
+
+from jobs_app import views
 
 from jobs_app.views import (
     ActivationKeyRequest,
@@ -11,6 +14,9 @@ from jobs_app.views import (
     Status
 )
 
+url_router = routers.DefaultRouter()
+url_router.register(r'api/experience', views.ExperienceListCreateAPIView, base_name='experiences')
+url_router.register(r'api/education', views.EducationListCreateAPIView, base_name='education')
 
 urlpatterns = [
     url(r'^api/register$', Register.as_view()),
@@ -22,3 +28,5 @@ urlpatterns = [
     url(r'^api/status$', Status.as_view()),
     url(r'^api/me$', Profile.as_view()),
 ]
+
+urlpatterns += url_router.urls
