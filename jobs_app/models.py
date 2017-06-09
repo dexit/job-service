@@ -9,7 +9,7 @@ class User(BaseUser):
 
     full_name = models.CharField(max_length=255, blank=False)
     location = models.CharField(max_length=64, blank=False)
-    photo = models.ImageField(blank=False)
+    photo = models.ImageField(blank=True)
     skills = models.CharField(max_length=255, blank=False)
 
 
