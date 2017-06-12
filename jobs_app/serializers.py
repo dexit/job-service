@@ -36,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
             'full_name',
             'location',
             'photo',
+            'phone_number',
             'skills',
             'experience',
             'education',
