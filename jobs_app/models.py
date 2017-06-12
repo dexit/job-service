@@ -7,10 +7,11 @@ class User(BaseUser):
     account_activation_sms_otp = None
     password_reset_sms_otp = None
 
-    full_name = models.CharField(max_length=255, blank=False)
-    location = models.CharField(max_length=64, blank=False)
+    full_name = models.CharField(max_length=255, blank=True)
+    location = models.CharField(max_length=64, blank=True)
     photo = models.ImageField(blank=True)
-    skills = models.CharField(max_length=255, blank=False)
+    skills = models.CharField(max_length=255, blank=True)
+    phone_number = models.CharField(max_length=64, blank=True)
 
 
 class Experience(models.Model):
