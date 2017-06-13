@@ -23,7 +23,6 @@ class EducationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    full_name = serializers.CharField(required=True)
     experience = ExperienceSerializer(read_only=True, many=True)
     education = EducationSerializer(read_only=True, many=True)
 
