@@ -23,8 +23,8 @@ class EducationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    experience = ExperienceSerializer(read_only=True, many=True)
-    education = EducationSerializer(read_only=True, many=True)
+    experience = ExperienceSerializer(required=False, many=True)
+    education = EducationSerializer(required=False, many=True)
 
     class Meta:
         model = models.User
@@ -40,3 +40,22 @@ class UserSerializer(serializers.ModelSerializer):
             'experience',
             'education',
         )
+
+    def create(self, validated_data):
+        experience = validated_data.pop('experience', {})
+        education = validated_data.pop('education', {})
+        user = models.User.objects.create(**validated_data)
+        for exp in experience:
+            models.Experience.objects.create(user=user, **exp)
+        for edu in education:
+            models.Education.objects.create(user=user, **edu)
+        return user
+
+    def update(self, instance, validated_data):
+        experience = validated_data.pop('experience', {})
+        education = validated_data.pop('education', {})
+        for exp in experience:
+            models.Experience.objects.create(user=instance, **exp)
+        for edu in education:
+            models.Education.objects.create(user=instance, **edu)
+        return instance
