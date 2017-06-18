@@ -62,6 +62,12 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
+        instance.full_name = validated_data.get('full_name', instance.full_name)
+        instance.location = validated_data.get('location', instance.location)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.photo = validated_data.get('photo', instance.photo)
+        instance.skills = validated_data.get('skills', instance.skills)
+        instance.save()
         experience = validated_data.pop('experience', {})
         education = validated_data.pop('education', {})
         for exp in experience:
