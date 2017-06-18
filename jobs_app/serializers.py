@@ -41,6 +41,16 @@ class UserSerializer(serializers.ModelSerializer):
             'education',
         )
 
+    def validate_experience(self, experience):
+        validator = ExperienceSerializer(data=experience, many=True)
+        validator.is_valid(raise_exception=True)
+        return experience
+
+    def validate_education(self, education):
+        validator = EducationSerializer(data=education, many=True)
+        validator.is_valid(raise_exception=True)
+        return education
+
     def create(self, validated_data):
         experience = validated_data.pop('experience', {})
         education = validated_data.pop('education', {})
