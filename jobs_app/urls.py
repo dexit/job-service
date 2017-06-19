@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework import routers
 
 from jobs_app import views
@@ -27,6 +29,6 @@ urlpatterns = [
     url(r'^api/change-password$', ChangePassword.as_view()),
     url(r'^api/status$', Status.as_view()),
     url(r'^api/me$', Profile.as_view()),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += url_router.urls
