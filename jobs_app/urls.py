@@ -17,8 +17,12 @@ from jobs_app.views import (
 )
 
 url_router = routers.DefaultRouter()
-url_router.register(r'api/experience', views.ExperienceListCreateAPIView, base_name='experiences')
-url_router.register(r'api/education', views.EducationListCreateAPIView, base_name='education')
+url_router.register(r'api/experience', views.ExperienceModelViewSet, base_name='experiences')
+url_router.register(r'api/education', views.EducationModelViewSet, base_name='education')
+url_router.register(r'api/post-job', views.JobListCreateAPIView, base_name='jobs')
+url_router.register(r'api/jobs/locations', views.JobLocationListView, base_name='locations')
+url_router.register(r'api/jobs/categories', views.JobCategoryListView, base_name='categories')
+url_router.register(r'api/jobs/types', views.PostingTypeListView, base_name='types')
 
 urlpatterns = [
     url(r'^api/register$', Register.as_view()),
