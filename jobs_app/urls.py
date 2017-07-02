@@ -25,7 +25,7 @@ url_router.register(r'api/jobs/categories', views.JobCategoryListView, base_name
 url_router.register(r'api/jobs/types', views.PostingTypeListView, base_name='types')
 
 urlpatterns = [
-    url(r'^api/register$', Register.as_view()),
+    url(r'^api/register$', Register.as_view(), name='register'),
     url(r'^api/request-activation-key$', ActivationKeyRequest.as_view()),
     url(r'^api/activate$', Activate.as_view()),
     url(r'^api/login$', Login.as_view()),

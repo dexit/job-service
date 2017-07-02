@@ -138,3 +138,5 @@ EMAIL_HOST_USER = CONFIG_HELPERS.get_email_credential_by_key('email')
 EMAIL_HOST_PASSWORD = CONFIG_HELPERS.get_email_credential_by_key('password')
 EMAIL_PORT = CONFIG_HELPERS.get_email_credential_by_key('port')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGIN_REDIRECT_URL = '/company-profile'

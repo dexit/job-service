@@ -1,14 +1,20 @@
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import permissions as drf_permissions
 from rest_framework import viewsets
 from rest_framework import exceptions
 from rest_framework import mixins
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from simple_login import views as dsl_views
 
 from jobs_app import models
 from jobs_app import serializers
 from jobs_app import permissions
+from jobs_app import forms
 
 
 def get_serializer_class(request):
@@ -130,3 +136,47 @@ class JobLocationListView(mixins.ListModelMixin, viewsets.GenericViewSet):
 class PostingTypeListView(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.PostingTypeSerializer
     queryset = models.PostingType.objects.all()
+
+
+def company_login_view(request):
+    if request.method == 'POST':
+        form = forms.CompanyLoginForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect('/register-company/')
+    else:
+        form = forms.CompanyLoginForm()
+    return render(request, 'registration/login.html', {'form': form})
+
+
+class RegisterCompany(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'register_company.html'
+
+    def get(self, request):
+        return Response({'serializer': serializers.CompanySerializer()})
+
+    def post(self, request):
+        return Response({'serializer': serializers.CompanySerializer(data=request.data)})
+
+
+class CompanyProfile(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'company_profile.html'
+
+    def get(self, request):
+        return Response({'serializer': serializers.CompanySerializer(instance=request.user)})
+
+    def post(self, request):
+        return Response({'serializer': serializers.CompanySerializer(
+            instance=request.user, data=request.data), 'profile': request.user})
+
+
+class PostAd(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'post_ad.html'
+
+    def get(self, request):
+        return Response({'serializer': serializers.JobSerializer()})
+
+    def post(self, request):
+        return Response({'serializer': serializers.JobSerializer(data=request.data)})
