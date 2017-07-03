@@ -153,10 +153,13 @@ class RegisterCompany(APIView):
     template_name = 'register_company.html'
 
     def get(self, request):
+        serializer = serializers.CompanySerializer()
         return Response({'serializer': serializers.CompanySerializer()})
 
     def post(self, request):
-        return Response({'serializer': serializers.CompanySerializer(data=request.data)})
+        serializer = serializers.CompanySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'serializer': serializer})
 
 
 class CompanyProfile(APIView):
@@ -164,11 +167,15 @@ class CompanyProfile(APIView):
     template_name = 'company_profile.html'
 
     def get(self, request):
-        return Response({'serializer': serializers.CompanySerializer(instance=request.user)})
+        serializer = serializers.CompanySerializer(instance=request.user)
+        return Response({'serializer': serializer})
 
     def post(self, request):
-        return Response({'serializer': serializers.CompanySerializer(
-            instance=request.user, data=request.data), 'profile': request.user})
+        serializer = serializers.CompanySerializer(
+            instance=request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'serializer': serializer, 'profile': request.user})
 
 
 class PostAd(APIView):
@@ -179,4 +186,6 @@ class PostAd(APIView):
         return Response({'serializer': serializers.JobSerializer()})
 
     def post(self, request):
-        return Response({'serializer': serializers.JobSerializer(data=request.data)})
+        serializer = serializers.JobSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'serializer': serializer})

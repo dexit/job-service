@@ -101,8 +101,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    type = serializers.IntegerField(required=True)
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    type = serializers.ChoiceField(choices=((3, "Company"), (3, "Company")), required=True)
     company_details = CompanyDetailSerializer(required=True)
 
     class Meta:
