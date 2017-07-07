@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^api/change-password$', ChangePassword.as_view()),
     url(r'^api/status$', Status.as_view()),
     url(r'^api/me$', Profile.as_view()),
+    url(r'^api/jobs/$', views.JobFilterAPIView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += url_router.urls

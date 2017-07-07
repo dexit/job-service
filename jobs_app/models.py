@@ -12,6 +12,12 @@ ACCOUNT_CHOICES = (
     (TYPE_ACCOUNT_COMPANY, 'Company'),
 )
 
+JOB_TYPE_CHOICES = (
+    ('Full-time', 'Full-time'),
+    ('Part-time', 'Part-time'),
+    ('Internship', 'Internship')
+)
+
 
 class User(dsl_models.BaseUser):
     account_activation_sms_otp = None
@@ -53,10 +59,10 @@ class Education(models.Model):
 
 
 class JobLocation(models.Model):
-    location = models.CharField(max_length=255, blank=False)
+    name = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
-        return self.location
+        return self.name
 
 
 class JobCategory(models.Model):
@@ -78,8 +84,9 @@ class PostingType(models.Model):
 
 class JobPosting(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=128, blank=False)
-    type = models.CharField(max_length=16, blank=False)
+    type = models.CharField(max_length=16, blank=False, choices=JOB_TYPE_CHOICES)
     location = models.ForeignKey(JobLocation, blank=False)
     categories = models.ManyToManyField(JobCategory, blank=False)
     scope = models.CharField(max_length=255, blank=False)

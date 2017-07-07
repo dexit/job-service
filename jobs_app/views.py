@@ -9,6 +9,8 @@ from rest_framework import mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
 from simple_login import views as dsl_views
 
 from jobs_app import models
@@ -189,3 +191,23 @@ class PostAd(APIView):
         serializer = serializers.JobSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response({'serializer': serializer})
+
+
+class JobFilter(django_filters.FilterSet):
+    category = django_filters.CharFilter(
+        name='categories__name',
+        lookup_expr='contains',
+    )
+    location = django_filters.CharFilter(name='location__name')
+    type = django_filters.CharFilter()
+
+    class Meta:
+        model = models.JobPosting
+        fields = ('categories', 'type', 'location')
+
+
+class JobFilterAPIView(generics.ListAPIView):
+    permission_classes = (drf_permissions.IsAuthenticated, )
+    serializer_class = serializers.JobSerializer
+    queryset = models.JobPosting.objects.all().order_by('-created_at')
+    filter_class = JobFilter

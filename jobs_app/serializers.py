@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework import exceptions
 
 from jobs_app import models
 
@@ -136,6 +137,12 @@ class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.JobPosting
         fields = '__all__'
+
+    def validate_type(self, job_type):
+        types = ['full-time', 'part-time', 'internship']
+        if job_type.lower() not in ['full-time', 'part-time', 'internship']:
+            raise exceptions.ValidationError('type must be one of {}'.format(', '.join(types)))
+        return job_type
 
 
 class JobCategorySerializer(serializers.ModelSerializer):
