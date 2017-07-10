@@ -76,8 +76,7 @@ class UserSerializer(serializers.ModelSerializer):
         education = validated_data.pop('education', {})
         user_details = validated_data.pop('user_details', {})
         user = models.User.objects.create(**validated_data)
-        if user_details:
-            models.UserDetail.objects.create(user=user, **user_details)
+        models.UserDetail.objects.create(user=user, **user_details)
         for exp in experience:
             models.Experience.objects.create(user=user, **exp)
         for edu in education:
