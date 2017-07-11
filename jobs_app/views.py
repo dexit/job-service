@@ -207,7 +207,6 @@ class JobFilter(django_filters.FilterSet):
 
 
 class JobFilterAPIView(generics.ListAPIView):
-    permission_classes = (drf_permissions.IsAuthenticated, )
     serializer_class = serializers.JobSerializer
     queryset = models.JobPosting.objects.all().order_by('-created_at')
     filter_class = JobFilter
