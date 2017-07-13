@@ -10,7 +10,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 import django_filters
-from django_filters.rest_framework import DjangoFilterBackend
 from simple_login import views as dsl_views
 
 from jobs_app import models
