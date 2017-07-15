@@ -17,6 +17,11 @@ JOB_TYPE_CHOICES = (
     ('Part-time', 'Part-time'),
     ('Internship', 'Internship')
 )
+JOB_LANGUAGE_TYPE = (
+    ('English', 'English'),
+    ('Malay', 'Malay'),
+    ('Chinese', 'Chinese')
+)
 
 
 class User(dsl_models.BaseUser):
@@ -94,3 +99,4 @@ class JobPosting(models.Model):
     detailed_description = models.CharField(max_length=2048, blank=False)
     salary = models.CharField(max_length=16, blank=True)
     posting_type = models.ForeignKey(PostingType, blank=False)
+    language = models.CharField(max_length=16, blank=False, choices=JOB_LANGUAGE_TYPE)
