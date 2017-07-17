@@ -1,4 +1,10 @@
 from django.db import models
+from django.db.models.signals import post_save
+from io import BytesIO
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+import qrcode
 
 from simple_login import models as dsl_models
 
@@ -100,3 +106,18 @@ class JobPosting(models.Model):
     salary = models.CharField(max_length=16, blank=True)
     posting_type = models.ForeignKey(PostingType, blank=False)
     language = models.CharField(max_length=16, blank=False, choices=JOB_LANGUAGE_TYPE)
+    qrcode = models.ImageField(blank=True, null=True)
+
+
+def process_job_save(sender, instance=None, created=False, **kwargs):
+    if created:
+        qr_image = qrcode.make(str(instance.id)).get_image()
+        buffer = BytesIO()
+        qr_image.save(buffer, format='JPEG')
+        instance.qrcode = InMemoryUploadedFile(
+            ContentFile(buffer.getvalue()), None, 'qrcode-job-{}'.format(instance.id),
+            'image/jpeg', qr_image.tell, None)
+        instance.save()
+
+
+post_save.connect(process_job_save, sender=JobPosting)

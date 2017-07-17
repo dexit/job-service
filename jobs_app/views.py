@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import permissions as drf_permissions
 from rest_framework import viewsets
