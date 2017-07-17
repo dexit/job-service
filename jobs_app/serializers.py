@@ -132,18 +132,16 @@ class CompanySerializer(serializers.ModelSerializer):
         return instance
 
 
-from pygments.styles import get_all_styles
-STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
-
-
 class JobSerializer(serializers.ModelSerializer):
     qrcode = serializers.ImageField(read_only=True)
-    creator = serializers.PrimaryKeyRelatedField()
-    title = serializers.CharField(choices=STYLE_CHOICES)
+    creator = serializers.SerializerMethodField()
 
     class Meta:
         model = models.JobPosting
         fields = '__all__'
+
+    def get_creator(self, obj):
+        return serializers.PrimaryKeyRelatedField(read_only=True, default=obj)
 
     def validate_type(self, job_type):
         types = ['full-time', 'part-time', 'internship']
