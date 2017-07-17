@@ -133,6 +133,8 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
+    qrcode = serializers.ImageField(read_only=True)
+
     class Meta:
         model = models.JobPosting
         fields = '__all__'
