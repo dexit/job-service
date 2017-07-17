@@ -115,7 +115,7 @@ def process_job_save(sender, instance=None, created=False, **kwargs):
         buffer = BytesIO()
         qr_image.save(buffer, format='JPEG')
         instance.qrcode = InMemoryUploadedFile(
-            ContentFile(buffer.getvalue()), None, 'qrcode-job-{}'.format(instance.id),
+            ContentFile(buffer.getvalue()), None, 'qrcode-job-{}.jpg'.format(instance.id),
             'image/jpeg', qr_image.tell, None)
         instance.save()
 
