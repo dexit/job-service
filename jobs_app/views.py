@@ -189,7 +189,7 @@ class PostAd(APIView):
     def post(self, request):
         serializer = serializers.JobSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(creator=self.request.user)
         return Response({'serializer': serializer})
 
 
