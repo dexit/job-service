@@ -8,6 +8,7 @@ from rest_framework import exceptions
 from rest_framework import mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django import shortcuts
 
 import django_filters
 from simple_login import views as dsl_views
@@ -210,3 +211,10 @@ class JobFilterAPIView(generics.ListAPIView):
     serializer_class = serializers.JobSerializer
     queryset = models.JobPosting.objects.all().order_by('-created_at')
     filter_class = JobFilter
+
+
+class JobView(generics.RetrieveAPIView):
+    serializer_class = serializers.JobSerializer
+
+    def get_object(self):
+        return shortcuts.get_object_or_404(models.JobPosting, id=int(self.kwargs['pk']))
