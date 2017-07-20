@@ -178,7 +178,8 @@ class JobSerializer(serializers.ModelSerializer):
         return obj.location.name
 
     def get_company_logo(self, obj):
-        return obj.photo.url if obj.photo else None
+        company = models.CompanyDetail.objects.get(user=obj.creator)
+        return company.photo.url if company.photo else None
 
 
 class JobCategorySerializer(serializers.ModelSerializer):
