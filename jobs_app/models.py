@@ -53,6 +53,7 @@ class CompanyDetail(models.Model):
     contact_number = models.CharField(max_length=64, blank=True)
     website = models.URLField(blank=True)
     registration_number = models.CharField(max_length=255, blank=False)
+    photo = models.ImageField(blank=True)
 
 
 class Experience(models.Model):

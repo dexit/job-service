@@ -1,7 +1,29 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework import exceptions
 
 from jobs_app import models
+
+
+class RichPrimaryKeyRelatedField(serializers.RelatedField):
+    # Taken from: https://gist.github.com/AndrewIngram/5c79a3e99ccd20245613
+    default_error_messages = serializers.PrimaryKeyRelatedField.default_error_messages
+
+    def __init__(self, serializer, **kwargs):
+        self.many = kwargs.get('many', False)
+        self.serializer = serializer
+        super().__init__(**kwargs)
+
+    def to_internal_value(self, data):
+        try:
+            return self.get_queryset().get(pk=data)
+        except ObjectDoesNotExist:
+            self.fail('does_not_exist', pk_value=data)
+        except (TypeError, ValueError):
+            self.fail('incorrect_type', data_type=type(data).__name__)
+
+    def to_representation(self, value):
+        return self.serializer(value, many=self.many).data
 
 
 class ExperienceSerializer(serializers.ModelSerializer):
@@ -41,7 +63,7 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.CompanyDetail
-        fields = ('type', 'details', 'contact_number', 'website', 'registration_number', 'user')
+        fields = ('type', 'details', 'contact_number', 'website', 'registration_number', 'user', 'photo')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -135,6 +157,9 @@ class CompanySerializer(serializers.ModelSerializer):
 class JobSerializer(serializers.ModelSerializer):
     qrcode = serializers.ImageField(read_only=True)
     creator = serializers.PrimaryKeyRelatedField(read_only=True)
+    creator_name = serializers.SerializerMethodField()
+    location_name = serializers.SerializerMethodField()
+    company_logo = serializers.SerializerMethodField()
 
     class Meta:
         model = models.JobPosting
@@ -145,6 +170,15 @@ class JobSerializer(serializers.ModelSerializer):
         if job_type.lower() not in ['full-time', 'part-time', 'internship']:
             raise exceptions.ValidationError('type must be one of {}'.format(', '.join(types)))
         return job_type
+
+    def get_creator_name(self, obj):
+        return obj.creator.name
+
+    def get_location_name(self, obj):
+        return obj.location.name
+
+    def get_company_logo(self, obj):
+        return obj.photo.url if obj.photo else None
 
 
 class JobCategorySerializer(serializers.ModelSerializer):
