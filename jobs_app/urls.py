@@ -23,6 +23,7 @@ url_router.register(r'api/post-job', views.JobListCreateAPIView, base_name='jobs
 url_router.register(r'api/jobs/locations', views.JobLocationListView, base_name='locations')
 url_router.register(r'api/jobs/categories', views.JobCategoryListView, base_name='categories')
 url_router.register(r'api/jobs/types', views.PostingTypeListView, base_name='types')
+url_router.register(r'api/jobs/saved', views.SavedJobListCreateAPIView, base_name='saved')
 
 urlpatterns = [
     url(r'^api/register$', Register.as_view(), name='register'),
@@ -35,7 +36,6 @@ urlpatterns = [
     url(r'^api/me$', Profile.as_view()),
     url(r'^api/jobs/$', views.JobFilterAPIView.as_view()),
     url(r'^api/jobs/(?P<pk>[0-9]+)$', views.JobView.as_view()),
-    url(r'^api/jobs/saved/$', views.SavedJobListCreateAPIView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += url_router.urls

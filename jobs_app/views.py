@@ -220,7 +220,10 @@ class JobView(generics.RetrieveAPIView):
         return shortcuts.get_object_or_404(models.JobPosting, id=int(self.kwargs['pk']))
 
 
-class SavedJobListCreateAPIView(generics.ListCreateAPIView):
+class SavedJobListCreateAPIView(mixins.ListModelMixin,
+                                mixins.CreateModelMixin,
+                                mixins.UpdateModelMixin,
+                                viewsets.GenericViewSet):
     permission_classes = (drf_permissions.IsAuthenticated, )
 
     def get_serializer_class(self):
