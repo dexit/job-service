@@ -238,3 +238,6 @@ class SavedJobListCreateAPIView(mixins.ListModelMixin,
 
     def perform_create(self, serializer):
         serializer.save(saver=self.request.user)
+
+    def get_object(self):
+        return shortcuts.get_object_or_404(models.SavedJob, id=self.kwargs['pk'])
