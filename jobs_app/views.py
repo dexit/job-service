@@ -218,3 +218,20 @@ class JobView(generics.RetrieveAPIView):
 
     def get_object(self):
         return shortcuts.get_object_or_404(models.JobPosting, id=int(self.kwargs['pk']))
+
+
+class SavedJobListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = (drf_permissions.IsAuthenticated, )
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return serializers.JobSerializer
+        return serializers.SavedJobSerializer
+
+    def get_queryset(self):
+        return models.JobPosting.objects.filter(
+            id__in=[job.job.id for job in models.SavedJob.objects.filter(saver=self.request.user)]
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(saver=self.request.user)

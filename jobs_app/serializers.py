@@ -198,3 +198,11 @@ class PostingTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PostingType
         fields = '__all__'
+
+
+class SavedJobSerializer(serializers.ModelSerializer):
+    job = serializers.PrimaryKeyRelatedField(queryset=models.JobPosting.objects.all())
+
+    class Meta:
+        model = models.SavedJob
+        fields = '__all__'

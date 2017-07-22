@@ -122,3 +122,9 @@ def process_job_save(sender, instance=None, created=False, **kwargs):
 
 
 post_save.connect(process_job_save, sender=JobPosting)
+
+
+class SavedJob(models.Model):
+    saved_at = models.DateTimeField(auto_now_add=True)
+    saver = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    job = models.ForeignKey(JobPosting)
