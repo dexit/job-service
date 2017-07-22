@@ -227,7 +227,7 @@ class SavedJobListCreateAPIView(mixins.ListModelMixin,
     permission_classes = (drf_permissions.IsAuthenticated, )
 
     def get_serializer_class(self):
-        if self.request.method == 'GET' or self.request.data == 'DELETE':
+        if self.request.method == 'GET' or self.request.method == 'DELETE':
             return serializers.JobSerializer
         return serializers.SavedJobSerializer
 
