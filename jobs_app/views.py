@@ -222,7 +222,7 @@ class JobView(generics.RetrieveAPIView):
 
 class SavedJobListCreateAPIView(mixins.ListModelMixin,
                                 mixins.CreateModelMixin,
-                                mixins.UpdateModelMixin,
+                                mixins.DestroyModelMixin,
                                 viewsets.GenericViewSet):
     permission_classes = (drf_permissions.IsAuthenticated, )
 
