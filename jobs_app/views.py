@@ -195,10 +195,7 @@ class PostAd(APIView):
 
 
 class JobFilter(django_filters.FilterSet):
-    category = django_filters.CharFilter(
-        name='categories__name',
-        lookup_expr='contains',
-    )
+    category = django_filters.CharFilter(name='categories__name', lookup_expr='contains')
     location = django_filters.CharFilter(name='location__name')
     type = django_filters.CharFilter()
 

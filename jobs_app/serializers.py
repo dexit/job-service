@@ -148,6 +148,7 @@ class CompanySerializer(serializers.ModelSerializer):
         instance.save()
         company_details = validated_data.pop('company_details', {})
         existing_details = models.CompanyDetail.objects.get(user=instance)
+        print(company_details)
         for k, v in company_details.items():
             setattr(existing_details, k, v)
         existing_details.save()
