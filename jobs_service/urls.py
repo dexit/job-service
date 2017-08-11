@@ -6,9 +6,10 @@ from jobs_app import views
 from jobs_app import urls
 
 urlpatterns = [
+    url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^', include(urls)),
-    url(r'^register-company/$', views.RegisterCompany.as_view(), name='register-company'),
+    url(r'^register-company/$', views.register, name='register-company'),
     url(r'^company-profile/$', views.CompanyProfile.as_view(), name='company-profile'),
     url(r'^post-ad/$', views.PostAd.as_view(), name='post-ad'),
     url(r'^login/$', auth_views.LoginView.as_view(), name='login'),

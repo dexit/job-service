@@ -1,4 +1,5 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.template import Context, loader
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -38,7 +39,7 @@ class Register(generics.CreateAPIView):
     serializer_class = serializers.UserSerializer
 
     def get_serializer_class(self):
-        account_type = int(self.request.data.get('type', 0))
+        account_type = int(self.request.data.get('type', 3))
         if not account_type:
             raise exceptions.ValidationError('Must provide "type" parameter.')
         if account_type == models.TYPE_ACCOUNT_COMPANY:
@@ -155,12 +156,21 @@ class RegisterCompany(APIView):
     template_name = 'register_company.html'
 
     def get(self, request):
-        serializer = serializers.CompanySerializer()
         return Response({'serializer': serializers.CompanySerializer()})
 
     def post(self, request):
+        data = request.data.dict()
+        name = {}
+        company_details = {}
+        for item in data:
+            print(item)
+            if item.startswith('company_details'):
+                pass
         serializer = serializers.CompanySerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid()
+        print(serializer.validated_data)
+        print(serializer.data)
+        serializer.save()
         return Response({'serializer': serializer})
 
 
@@ -238,3 +248,8 @@ class SavedJobListCreateAPIView(mixins.ListModelMixin,
 
     def get_object(self):
         return shortcuts.get_object_or_404(models.SavedJob, id=self.kwargs['pk'])
+
+
+def register(request):
+    template = loader.get_template("site/register.html")
+    return HttpResponse(template.render(request=request))

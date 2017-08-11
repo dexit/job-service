@@ -57,13 +57,14 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class CompanyDetailSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.filter(type=models.TYPE_ACCOUNT_COMPANY), required=False,
-        write_only=True)
+    # user = serializers.PrimaryKeyRelatedField(read_only=True)
+    # user = serializers.PrimaryKeyRelatedField(
+    #     queryset=models.User.objects.filter(type=models.TYPE_ACCOUNT_COMPANY), required=False,
+    #     write_only=True)
 
     class Meta:
         model = models.CompanyDetail
-        fields = ('type', 'details', 'contact_number', 'website', 'registration_number', 'user', 'photo')
+        fields = ('type', 'details', 'contact_number', 'website', 'registration_number', 'photo')
 
 
 class UserSerializer(serializers.ModelSerializer):
