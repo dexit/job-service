@@ -51,13 +51,13 @@
             "company_details.registration_number": {
                 validators: {
                      stringLength: {
-                        min: 8,
+                        min: 8
                     },
                     notEmpty: {
                         message: 'Please supply your company registration number'
                     }
                 }
-            },
+            }
             }
         })
         .on('success.form.bv', function(e) {
