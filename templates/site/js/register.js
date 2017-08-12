@@ -50,9 +50,6 @@
             },
             "company_details.registration_number": {
                 validators: {
-                     stringLength: {
-                        min: 8
-                    },
                     notEmpty: {
                         message: 'Please supply your company registration number'
                     }
@@ -60,22 +57,4 @@
             }
             }
         })
-        .on('success.form.bv', function(e) {
-            $('#success_message').slideDown({ opacity: "show" }, "slow") // Do something ...
-                $('#contact_form').data('bootstrapValidator').resetForm();
-
-            // Prevent form submission
-            e.preventDefault();
-
-            // Get the form instance
-            var $form = $(e.target);
-
-            // Get the BootstrapValidator instance
-            var bv = $form.data('bootstrapValidator');
-
-            // Use Ajax to submit form data
-            $.post($form.attr('action'), $form.serialize(), function(result) {
-                console.log(result);
-            }, 'json');
-        });
 });
