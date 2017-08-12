@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+{% load static %}
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -9,7 +12,7 @@
     <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css'>
     <link rel='stylesheet prefetch' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
 
-    <link rel="stylesheet" href="css/style.css">
+{#    <link rel="stylesheet" href="{% static "css/style.css" %}">#}
 
 </head>
 
@@ -148,7 +151,7 @@
 <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
 
-<script src="js/register.js"></script>
+<script>src="{% static "js/register.js" %}"</script>
 
 <script>
     $('#sign-up-form').on('submit', function(event) {
@@ -164,7 +167,7 @@
             data : formData,
             statusCode: {
                 201: function(xhr) {
-                    document.getElementById("sign-up-form").innerHTML = "Company Registered.";
+                    document.getElementById("sign-up-form").innerHTML = "Company Registered, now wait for admin' approval";
                 },
                 400: function (xhr) {
                     document.getElementById("sign-up-form").innerHTML = "An error occurred\n\n" + xhr.responseText;

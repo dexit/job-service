@@ -10,7 +10,7 @@
             name: {
                 validators: {
                         stringLength: {
-                        min: 2,
+                        min: 2
                     },
                         notEmpty: {
                         message: 'Please supply a name'
@@ -20,7 +20,7 @@
              password: {
                 validators: {
                      stringLength: {
-                        min: 8,
+                        min: 8
                     },
                     notEmpty: {
                         message: 'Please supply a password'
