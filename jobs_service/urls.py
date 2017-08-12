@@ -12,6 +12,6 @@ urlpatterns = [
     url(r'^register-company/$', views.register, name='register-company'),
     url(r'^company-profile/$', views.CompanyProfile.as_view(), name='company-profile'),
     url(r'^post-ad/$', views.PostAd.as_view(), name='post-ad'),
-    url(r'^login/$', auth_views.LoginView.as_view(), name='login'),
+    url(r'^login/$', auth_views.LoginView.as_view(template_name='site/login.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]

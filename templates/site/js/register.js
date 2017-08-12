@@ -44,7 +44,7 @@
                     },
                     phone: {
                         country: 'US',
-                        message: 'Please supply a vaild phone number with area code'
+                        message: 'Please supply a valid phone number with area code'
                     }
                 }
             },
@@ -55,6 +55,6 @@
                     }
                 }
             }
-            }
-        })
+        }
+    })
 });
