@@ -208,3 +208,26 @@ class SavedJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SavedJob
         fields = '__all__'
+
+
+class PushKeySerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=models.User.objects.all(), required=False)
+
+    class Meta:
+        model = models.PushKey
+        fields = '__all__'
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Message
+        fields = '__all__'
+
+
+class MessageToValidator(serializers.Serializer):
+    to = serializers.PrimaryKeyRelatedField(queryset=models.User.objects.all(), required=True)
+
+
+class MessageFilterValidator(serializers.Serializer):
+    receiver = serializers.PrimaryKeyRelatedField(
+        queryset=models.User.objects.all(), required=True)

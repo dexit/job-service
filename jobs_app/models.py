@@ -128,3 +128,18 @@ class SavedJob(models.Model):
     saved_at = models.DateTimeField(auto_now_add=True)
     saver = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     job = models.ForeignKey(JobPosting)
+
+
+class PushKey(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    device = models.CharField(max_length=64, blank=False, unique=True)
+    key = models.CharField(max_length=255, blank=False)
+
+
+class Message(models.Model):
+    creator = models.ForeignKey(User, db_index=True)
+    company = models.ForeignKey(User, db_index=True)
+    user = models.ForeignKey(User, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    text = models.CharField(max_length=255, blank=False)
+    read = models.BooleanField(default=False, db_index=True)

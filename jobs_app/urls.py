@@ -36,6 +36,9 @@ urlpatterns = [
     url(r'^api/me$', Profile.as_view()),
     url(r'^api/jobs/$', views.JobFilterAPIView.as_view()),
     url(r'^api/jobs/(?P<pk>[0-9]+)$', views.JobView.as_view()),
+    url(r'^api/messages/$', views.MessageListCreateAPIView.as_view()),
+    url(r'^api/messages/metadata$', views.MessageMetadataAPIView.as_view()),
+    url(r'^api/pushkey$', views.PushKeyCreateAPIView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += url_router.urls

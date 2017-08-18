@@ -1,11 +1,14 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.template import Context, loader
+from django.template import loader
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import permissions as drf_permissions
 from rest_framework import viewsets
 from rest_framework import exceptions
+from rest_framework import response
+from rest_framework import status
 from rest_framework import mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -248,6 +251,95 @@ class SavedJobListCreateAPIView(mixins.ListModelMixin,
 
     def get_object(self):
         return shortcuts.get_object_or_404(models.SavedJob, id=self.kwargs['pk'])
+
+
+class MessageListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = (drf_permissions.IsAuthenticated, )
+    serializer_class = serializers.MessageSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        to_validator = serializers.MessageToValidator(data=self.request.data)
+        to_validator.is_valid(True)
+        if self.request.user.type == models.TYPE_ACCOUNT_COMPANY:
+            self.request.data.update({'company': self.request.user.id})
+            self.request.data.update({'user': to_validator.validated_data['to'].id})
+        elif self.request.user.type == models.TYPE_ACCOUNT_USER:
+            self.request.data.update({'user': self.request.user.id})
+            self.request.data.update({'company': to_validator.validated_data['to'].id})
+        return super().post(request, *args, **kwargs)
+
+    def get_queryset(self):
+        to_validator = serializers.MessageToValidator(data=self.request.data)
+        to_validator.is_valid(True)
+        return models.Message.objects.filter(sender=self.request.user,
+                                             receiver=to_validator.validated_data['to'])
+
+
+class MessageMetadataAPIView(APIView):
+    permission_classes = (drf_permissions.IsAuthenticated,)
+
+    def get(self, *args, **kwargs):
+        seen = set()
+        messages_with_unique_profile = []
+        if self.request.user.type == models.TYPE_ACCOUNT_COMPANY:
+            all_messages = models.Message.objects.filter(company=self.request.user)
+            for message in all_messages:
+                if message.user not in seen:
+                    messages_with_unique_profile.append(message)
+                    seen.add(message.user)
+        else:
+            all_messages = models.Message.objects.filter(user=self.request.user)
+            for message in all_messages:
+                if message.company not in seen:
+                    messages_with_unique_profile.append(message)
+                    seen.add(message.company)
+
+        data = []
+        for message in messages_with_unique_profile:
+            msg_data = {'latest_text': message.text}
+            if self.request.user.type == models.TYPE_ACCOUNT_COMPANY:
+                user = models.UserDetail.objects.get(user=message.user)
+                msg_data.update({
+                    'unread_count': all_messages.filter(
+                        ~Q(creator=self.request.user), company=self.request.user,
+                        user=message.user, read=False).count()})
+            else:
+                user = models.CompanyDetail.objects.get(user=message.user)
+                msg_data.update({
+                    'unread_count': all_messages.filter(
+                        ~Q(creator=self.request.user), company=message.company,
+                        user=self.request.user, read=False).count()})
+            msg_data.update({
+                'user_id': user.user.id,
+                'photo_url': user.photo.url if user.photo else "",
+                'full_name': user.user.name,
+                'created_at': message.created_at.__str__(),
+            })
+            data.append(msg_data)
+        return response.Response(data=data, status=status.HTTP_200_OK)
+
+
+class PushKeyCreateAPIView(generics.CreateAPIView):
+    serializer_class = serializers.PushKeySerializer
+    permission_classes = (drf_permissions.IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        self.request.data.update({'user': self.request.user.id})
+        device = self.request.data.get('device')
+        if not device:
+            return Response(data={'device': 'required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            device_push_key = models.PushKey.objects.get(device=device)
+            serializer = serializers.PushKeySerializer(
+                data=self.request.data, instance=device_push_key, partial=True)
+            serializer.is_valid(True)
+            serializer.save()
+            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+        except models.PushKey.DoesNotExist:
+            return super().post(request, *args, **kwargs)
 
 
 def register(request):
