@@ -219,6 +219,9 @@ class PushKeySerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    creator = serializers.PrimaryKeyRelatedField(
+        queryset=models.User.objects.all(), required=False)
+
     class Meta:
         model = models.Message
         fields = '__all__'

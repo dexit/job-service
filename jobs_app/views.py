@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse
+from django import shortcuts
 from django.template import loader
 from django.db.models import Q
 from django.shortcuts import render
@@ -258,7 +259,7 @@ class MessageListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = serializers.MessageSerializer
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        serializer.save(creator=self.request.user)
 
     def post(self, request, *args, **kwargs):
         to_validator = serializers.MessageToValidator(data=self.request.data)
@@ -272,10 +273,14 @@ class MessageListCreateAPIView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
     def get_queryset(self):
-        to_validator = serializers.MessageToValidator(data=self.request.data)
+        to_validator = serializers.MessageToValidator(data=self.request.query_params)
         to_validator.is_valid(True)
-        return models.Message.objects.filter(sender=self.request.user,
-                                             receiver=to_validator.validated_data['to'])
+        if self.request.user.type == models.TYPE_ACCOUNT_COMPANY:
+            return models.Message.objects.filter(company=self.request.user,
+                                                 user=to_validator.validated_data['to'])
+        else:
+            return models.Message.objects.filter(user=self.request.user,
+                                                 company=to_validator.validated_data['to'])
 
 
 class MessageMetadataAPIView(APIView):
@@ -301,13 +306,13 @@ class MessageMetadataAPIView(APIView):
         for message in messages_with_unique_profile:
             msg_data = {'latest_text': message.text}
             if self.request.user.type == models.TYPE_ACCOUNT_COMPANY:
-                user = models.UserDetail.objects.get(user=message.user)
+                user = shortcuts.get_object_or_404(models.UserDetail, user=message.user)
                 msg_data.update({
                     'unread_count': all_messages.filter(
                         ~Q(creator=self.request.user), company=self.request.user,
                         user=message.user, read=False).count()})
             else:
-                user = models.CompanyDetail.objects.get(user=message.user)
+                user = shortcuts.get_object_or_404(models.CompanyDetail, user=message.company)
                 msg_data.update({
                     'unread_count': all_messages.filter(
                         ~Q(creator=self.request.user), company=message.company,
